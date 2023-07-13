@@ -2,26 +2,74 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
+@import url("https://fonts.googleapis.com/css2?family=Montserrat+Alternates:ital,wght@0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+
+body {
+  margin: 0;
+  height: 100vh;
+  /* display: flex; */
+  /* align-items: center; */
+  /* justify-content: center; */
+  background: linear-gradient(45deg, #ff6699, #ffb3ba);
+  background-size: 200% 200%;
+  animation: gradient 10s ease infinite;
+  color: white;
+  /* font-family: "Poppins", sans-serif; */
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
   }
 }
 
-body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+.header-icon {
+  posision: relative;
+  top: -9px;
 }
+
+.heart-container {
+  position: fixed;
+  bottom: 0;
+}
+
+.heart {
+  /* width: 10%; */
+  transform: scale(0.5);
+  /* margin-left: -80px; */
+  /* height: auto; */
+  /* left: 0; */
+}
+
+/* .heading { */
+/* } */
+
+/* :root { */
+/*   --foreground-rgb: 0, 0, 0; */
+/*   --background-start-rgb: 214, 219, 220; */
+/*   --background-end-rgb: 255, 255, 255; */
+/* } */
+/**/
+/* @media (prefers-color-scheme: dark) { */
+/*   :root { */
+/*     --foreground-rgb: 255, 255, 255; */
+/*     --background-start-rgb: 0, 0, 0; */
+/*     --background-end-rgb: 0, 0, 0; */
+/*   } */
+/* } */
+/**/
+/* body { */
+/*   color: rgb(var(--foreground-rgb)); */
+/*   background: linear-gradient( */
+/*       to bottom, */
+/*       transparent, */
+/*       rgb(var(--background-end-rgb)) */
+/*     ) */
+/*     rgb(var(--background-start-rgb)); */
+/* } */

@@ -3,7 +3,9 @@ import React from 'react'
 import Gif from "../../components/gif"
 import DaysCounter from "../../components/counter"
 import HeartSvg from "../../components/heart_svg"
-
+import Dates from "../../components/dates"
+// import dynamic from 'next/dynamic'
+// const NoSSR = dynamic(() => import('../../components/dates'), { ssr: false })
 const page = () => {
 	return (
 		<div>
@@ -12,11 +14,14 @@ const page = () => {
 				<Gif type="parrot" />
 				<Gif type="reverse" />
 			</div>
-				<div className='heart-container flex items-center justify-center w-full'>
-					<HeartSvg className="heart" />
-					<HeartSvg className="heart" />
-					<HeartSvg className="heart" />
-				</div>
+			<div className='p-5 m-2 rounded-xl border-2 border-red-300 grid grid-cols-3'>
+				<Dates />
+			</div>
+			<div className='heart-container flex items-center justify-center w-full'>
+				<HeartSvg className="heart" />
+				<HeartSvg className="heart" />
+				<HeartSvg className="heart" />
+			</div>
 		</div>
 	)
 }

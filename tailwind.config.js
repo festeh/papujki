@@ -16,6 +16,7 @@ module.exports = {
         poppins: ["Poppins", "sans-serif"],
         montserrat: ["Montserrat Alternates", "Lobster", "sans-serif"],
         lobster: ["Lobster", "sans-serif"],
+        roboto: ["Roboto", "sans-serif"],
       },
     },
   },

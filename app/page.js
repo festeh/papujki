@@ -11,7 +11,7 @@ const page = () => {
 				<Gif type="parrot" />
 				<Gif type="reverse" />
 			</div>
-			<div className='p-5 m-2 rounded-xl border-2 border-red-300 grid grid-cols-3'>
+			<div className='p-5 m-2 rounded-xl border-2 border-red-300 grid lg:grid-cols-3'>
 				<Dates />
 			</div>
 			<div className='heart-container flex items-center justify-center w-full'>

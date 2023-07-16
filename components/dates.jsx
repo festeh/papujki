@@ -2,7 +2,7 @@
 
 import React from 'react'
 import dayjs from 'dayjs';
-import { HebrewCalendar, HDate, Location, Event } from '@hebcal/core';
+import { greg, Sedra, HebrewCalendar, HDate, Location, HavdalahEvent } from '@hebcal/core';
 
 let papujki_dates = [
 	{ name: "Папужковчина", date: "09-04" },
@@ -35,20 +35,37 @@ function days_format(num) {
 	return `${num} дней`
 }
 
-const dates = () => {
-	const currentDate = dayjs();
-	let papujki_events = papujki_dates.map((info) => {
-		return { "name": info.name, "date": currentDate.year() + "-" + info.date }
+function getParsha(hebDate) {
+	const sed = new Sedra(hebDate.getFullYear(), false);
+	return sed.getString(hebDate);
+}
+
+function getHavdalahTime(allEvents, hebDate) {
+	const firstHavdalah = allEvents.find((ev) => {
+		return ev.desc == "Havdalah" && ev.date.abs0 >= hebDate.abs0;
 	});
-	const options = {
-		year: currentDate.year(),
-		isHebrewYear: false,
-		candlelighting: false,
-		location: Location.lookup('Berlin'),
-		sedrot: false,
-		omer: false,
-	};
-	const jewish_events = HebrewCalendar.calendar(options).map(
+	if (!firstHavdalah) {
+		return "";
+	}
+	return "✨" + firstHavdalah.eventTimeStr;
+}
+
+function getCandleLightTime(allEvents, hebDate) {
+	const candleLight = allEvents.find((ev) => {
+		return ev.desc == "Candle lighting" && ev.date.abs0 >= hebDate.abs0;
+	});
+	if (!candleLight) {
+		return "";
+	}
+	return "🕯️" + candleLight.eventTimeStr;
+}
+
+
+function CollectEvents(currentDate, allEvents) {
+	let papujki_events = papujki_dates.map((info) => {
+		return { "name": info.name, "date": currentDate.getFullYear() + "-" + info.date }
+	});
+	const jewish_events = allEvents.map(
 		(ev) => {
 			return { "name": ev.render('en'), "date": ev.getDate().greg().toISOString().split('T')[0] }
 		}
@@ -61,14 +78,45 @@ const dates = () => {
 		.filter((ev) => {
 			return ev.date.localeCompare(currentDate.toISOString().split('T')[0]) >= 1
 		})
+	return papujki_events;
+}
 
+function MakeListElement(str, key) {
+	const li_style = "bg-slate-200 p-2 mt-1 border-b";
+	return <li className={li_style} key={key}>{str}</li>
+}
+
+const JewishDatesList = () => {
+	const currentDate = new Date();
+	const rd = greg.greg2abs(currentDate);
+	const hebDate = new HDate(rd);
+	const options = {
+		year: currentDate.getFullYear(),
+		isHebrewYear: false,
+		candlelighting: true,
+		location: Location.lookup('Berlin'),
+		sedrot: false,
+		omer: false,
+	};
+	const allEvents = HebrewCalendar.calendar(options);
+	const papujki_events = CollectEvents(currentDate, allEvents);
+	const parsha = getParsha(hebDate);
+	const havdalahTime = getHavdalahTime(allEvents, hebDate);
+	const candleLightTime = getCandleLightTime(allEvents, hebDate);
+	const lis = [MakeListElement(`${parsha} ${candleLightTime}  ${havdalahTime}`, "parsha")];
+	lis.push(...papujki_events.map((info) => {
+		const evDesc = <p>
+			{info.name + " "}
+			<span className='text-lg'>
+				(Через {days_format(dayjs(info.date).diff(currentDate, 'day'))}) </span>
+		</p>
+		return MakeListElement(evDesc, info.name);
+	}))
 	return (
 		<ul className="flex flex-col text-black text-2xl font-bold font-roboto shadow-xl">
-			{papujki_events.map((info) => {
-				return <li className="bg-slate-200 p-2 mt-1 border-b" key={info.name}>{info.name} <span className='text-lg'>(Через {days_format(dayjs(info.date).diff(currentDate, 'day'))}) </span></li>
-			})}
+			{lis}
 		</ul>
 	)
 }
 
-export default dates
+export default JewishDatesList

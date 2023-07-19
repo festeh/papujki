@@ -3,6 +3,9 @@
 import React from 'react'
 import dayjs from 'dayjs';
 import { greg, Sedra, HebrewCalendar, HDate, Location, HavdalahEvent } from '@hebcal/core';
+import List from '@mui/joy/List';
+import ListItem from '@mui/joy/ListItem';
+import ListItemButton from '@mui/joy/ListItemButton';
 
 let papujki_dates = [
 	{ name: "Папужковчина", date: "09-04" },
@@ -13,6 +16,7 @@ let papujki_dates = [
 const Allowed = [
 	"Purim",
 	"Pesach I",
+	"Tish'a B'Av",
 	// "Sukkot I", 
 	"Shavuot I", "Yom Kippur",
 	"Rosh Hashana 5",
@@ -82,8 +86,12 @@ function CollectEvents(currentDate, allEvents) {
 }
 
 function MakeListElement(str, key) {
-	const li_style = "bg-slate-200 p-2 mt-1 border-b";
-	return <li className={li_style} key={key}>{str}</li>
+	const li_style = "font-bold";
+	return <ListItem className={li_style} key={key}>
+		<ListItemButton color="primary" variant="soft" className="text-lg">
+			{str}
+		</ListItemButton>
+	</ListItem>
 }
 
 const JewishDatesList = () => {
@@ -107,15 +115,19 @@ const JewishDatesList = () => {
 	lis.push(...papujki_events.map((info) => {
 		const evDesc = <p>
 			{info.name + " "}
-			<span className='text-lg'>
+			<span className='font-normal'>
 				(Через {days_format(dayjs(info.date).diff(currentDate, 'day'))}) </span>
 		</p>
 		return MakeListElement(evDesc, info.name);
 	}))
 	return (
-		<ul className="flex flex-col text-black text-2xl font-bold font-roboto shadow-xl">
+		<List className="" size="md" variant=""
+			sx={{
+				borderRadius: 'lg',
+			}}
+		>
 			{lis}
-		</ul>
+		</List>
 	)
 }
 

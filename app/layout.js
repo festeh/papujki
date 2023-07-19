@@ -22,6 +22,10 @@ export default function RootLayout({ children }) {
           href="https://fonts.googleapis.com/css2?family=Roboto&display=swap"
           rel="stylesheet"
         />
+        <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/css?family=Public+Sans&display=swap"
+        />
       </head>
       <body>{children}</body>
     </html>

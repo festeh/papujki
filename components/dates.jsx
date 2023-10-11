@@ -11,6 +11,7 @@ let papujki_dates = [
 	{ name: "Папужковчина", date: "09-04" },
 	{ name: "ДР Котика", date: "09-03" },
 	{ name: "ДР Зайки", date: "01-10" },
+	{ name: "Годовщина свадьбы", date: "04-28" },
 ]
 
 const Allowed = [

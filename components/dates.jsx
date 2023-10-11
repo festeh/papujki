@@ -16,20 +16,15 @@ let papujki_dates = [
 
 const Allowed = [
 	"Purim",
-	"Pesach I ",
-	"Pesach II",
-	"Pesach III (CH''M)",
-	"Pesach IV (CH''M)",
-	"Pesach V (CH''M)",
-	"Pesach VI (CH''M)",
-	"Pesach VII",
 	"Pesach I",
+	"Pesach VII",
 	"Tish'a B'Av",
 	"Sukkot I",
-	"Sukkot II",
 	"Shavuot I", "Yom Kippur",
 	"Rosh Hashana 5",
 	"Chanukah: 1",
+	"Simchat Torah",
+	"Shmini Atzeret",
 ]
 
 function days_format(num) {
@@ -101,7 +96,7 @@ function CollectEvents(currentDate, this_year_cal, next_year_cal) {
 	const jewish_events = this_year_cal.map(createEvent)
 		.concat(next_year_cal.map(createEvent))
 		.filter((ev) => Allowed.some(prefix => ev.name === prefix) || ev.name.startsWith(
-			"Rosh Hashana 5") || ev.name.startsWith("Chanukah"))
+			"Rosh Hashana 5"))
 	papujki_events = papujki_events.concat(jewish_events);
 	papujki_events = papujki_events.sort((a, b) => {
 		return a.date.localeCompare(b.date);

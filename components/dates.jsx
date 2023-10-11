@@ -15,12 +15,14 @@ let papujki_dates = [
 ]
 
 const Allowed = [
+	"Tu BiShvat",
 	"Purim",
 	"Pesach I",
 	"Pesach VII",
 	"Tish'a B'Av",
 	"Sukkot I",
 	"Shavuot I",
+	"Yom HaShoah",
 	"Yom Kippur",
 	"Rosh Hashana 5",
 	"Chanukah: 1 Candle",
@@ -93,7 +95,7 @@ function CollectEvents(currentDate, this_year_cal, next_year_cal) {
 	let papujki_events = papujki_dates.map((info) => {
 		return { "name": info.name, "date": getEventDateStr(info.date, currentDate) }
 	});
-	console.log(this_year_cal.map(createEvent));
+	console.log(this_year_cal.map(createEvent).filter((ev) => !ev.name.startsWith("Candle") && !ev.name.startsWith("Havdal") && !ev.name.startsWith("Fast beg")))
 	const jewish_events = this_year_cal.map(createEvent)
 		.concat(next_year_cal.map(createEvent))
 		.filter((ev) => Allowed.some(prefix => ev.name === prefix) || ev.name.startsWith(

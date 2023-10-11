@@ -15,9 +15,17 @@ let papujki_dates = [
 
 const Allowed = [
 	"Purim",
+	"Pesach I ",
+	"Pesach II",
+	"Pesach III (CH''M)",
+	"Pesach IV (CH''M)",
+	"Pesach V (CH''M)",
+	"Pesach VI (CH''M)",
+	"Pesach VII",
 	"Pesach I",
 	"Tish'a B'Av",
-	// "Sukkot I", 
+	"Sukkot I",
+	"Sukkot II",
 	"Shavuot I", "Yom Kippur",
 	"Rosh Hashana 5",
 	"Chanukah: 1",
@@ -64,17 +72,35 @@ function getCandleLightTime(allEvents, hebDate) {
 	return "🕯️" + candleLight.eventTimeStr;
 }
 
-
-function CollectEvents(currentDate, allEvents) {
-	let papujki_events = papujki_dates.map((info) => {
-		return { "name": info.name, "date": currentDate.getFullYear() + "-" + info.date }
-	});
-	const jewish_events = allEvents.map(
-		(ev) => {
-			return { "name": ev.render('en'), "date": ev.getDate().greg().toISOString().split('T')[0] }
-		}
+function createEvent(ev) {
+	return (
+		{ "name": ev.render('en'), "date": ev.getDate().greg().toISOString().split('T')[0] }
 	)
-		.filter((ev) => Allowed.some(prefix => ev.name.startsWith(prefix) || ev.name == "Sukkot I"));
+}
+
+function removeDuplicates(arr) {
+	const uniqueSet = new Set();
+	const result = [];
+
+	for (const obj of arr) {
+		if (!uniqueSet.has(obj.name)) {
+			uniqueSet.add(obj.name);
+			result.push(obj);
+		}
+	}
+
+	return result;
+}
+
+function CollectEvents(currentDate, this_year_cal, next_year_cal) {
+	let papujki_events = papujki_dates.map((info) => {
+		return { "name": info.name, "date": getEventDateStr(info.date, currentDate) }
+	});
+	console.log(this_year_cal.map(createEvent));
+	const jewish_events = this_year_cal.map(createEvent)
+		.concat(next_year_cal.map(createEvent))
+		.filter((ev) => Allowed.some(prefix => ev.name === prefix) || ev.name.startsWith(
+			"Rosh Hashana 5") || ev.name.startsWith("Chanukah"))
 	papujki_events = papujki_events.concat(jewish_events);
 	papujki_events = papujki_events.sort((a, b) => {
 		return a.date.localeCompare(b.date);
@@ -82,6 +108,8 @@ function CollectEvents(currentDate, allEvents) {
 		.filter((ev) => {
 			return ev.date.localeCompare(currentDate.toISOString().split('T')[0]) >= 1
 		})
+	console.log(papujki_events);
+	papujki_events = removeDuplicates(papujki_events);
 	return papujki_events;
 }
 
@@ -94,23 +122,38 @@ function MakeListElement(str, key) {
 	</ListItem>
 }
 
-const JewishDatesList = () => {
-	const currentDate = new Date();
-	const rd = greg.greg2abs(currentDate);
-	const hebDate = new HDate(rd);
-	const options = {
-		year: currentDate.getFullYear(),
+function getCalendar(year) {
+	let options = {
+		year: year,
 		isHebrewYear: false,
 		candlelighting: true,
 		location: Location.lookup('Berlin'),
 		sedrot: false,
 		omer: false,
 	};
-	const allEvents = HebrewCalendar.calendar(options);
-	const papujki_events = CollectEvents(currentDate, allEvents);
+	return HebrewCalendar.calendar(options);
+}
+
+function getEventDateStr(name, currentDate) {
+	let thisYearDateStr = currentDate.getFullYear() + "-" + name
+	let thisYearDate = new Date(thisYearDateStr);
+	if (thisYearDate >= currentDate) {
+		return thisYearDateStr
+	}
+	return (currentDate.getFullYear() + 1) + "-" + name
+}
+
+
+const JewishDatesList = () => {
+	const currentDate = new Date();
+	const rd = greg.greg2abs(currentDate);
+	const hebDate = new HDate(rd);
+	const thisYearCalendar = getCalendar(currentDate.getFullYear());
+	const nextYearCalendar = getCalendar(currentDate.getFullYear() + 1);
+	const papujki_events = CollectEvents(currentDate, thisYearCalendar, nextYearCalendar);
 	const parsha = getParsha(hebDate);
-	const havdalahTime = getHavdalahTime(allEvents, hebDate);
-	const candleLightTime = getCandleLightTime(allEvents, hebDate);
+	const havdalahTime = getHavdalahTime(thisYearCalendar, hebDate);
+	const candleLightTime = getCandleLightTime(thisYearCalendar, hebDate);
 	const lis = [MakeListElement(`${parsha} ${candleLightTime}  ${havdalahTime}`, "parsha")];
 	lis.push(...papujki_events.map((info) => {
 		const evDesc = <p>

@@ -5,20 +5,29 @@ import Dates from "../components/dates"
 
 const page = () => {
 	return (
-		<div>
-			<div className="flex items-center justify-center heading text-center mt-5 text-4xl text-black font-lobster">
-				<DaysCounter />
-				<Gif type="parrot" />
-				<Gif type="reverse" />
-			</div>
-			<div className='p-5 m-2 rounded-xl border-2 border-red-300 grid lg:grid-cols-3'>
+		<div className="min-h-screen">
+			{/* Header Section with Counter and Gifs */}
+			<header className="header-section">
+				<div className="flex items-center justify-center text-center">
+					<DaysCounter />
+					<Gif type="parrot" />
+					<Gif type="reverse" />
+				</div>
+			</header>
+
+			{/* Main Content Section with Dates */}
+			<main className="content-section">
 				<Dates />
-			</div>
-			<div className='heart-container flex items-center justify-center w-full'>
-				<HeartSvg className="heart" />
-				<HeartSvg className="heart" />
-				<HeartSvg className="heart" />
-			</div>
+			</main>
+
+			{/* Footer Section with Hearts */}
+			<footer className="footer-section">
+				<div className='heart-container flex items-center justify-center w-full'>
+					<HeartSvg className="heart" />
+					<HeartSvg className="heart" />
+					<HeartSvg className="heart" />
+				</div>
+			</footer>
 		</div>
 	)
 }

@@ -7,10 +7,11 @@ const DaysCounter = () => {
 	const parsedDate = dayjs(date);
 	const currentDate = dayjs();
 	const dateDelta = currentDate.diff(parsedDate, 'day');
-	const heading = `Папужки вместе уже ${dateDelta} дней  `;
 	return (
 		<div>
-			<h1 className="ml-2">{heading}</h1>
+			<h1 className="ml-2 text-3xl text-white" style={{fontFamily: 'Lobster, cursive'}}>
+				Папужки вместе уже <span className="text-highlight text-4xl" style={{fontFamily: 'Lobster, cursive'}}>{dateDelta}</span> дней  
+			</h1>
 		</div>
 	)
 }

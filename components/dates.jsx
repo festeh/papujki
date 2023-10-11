@@ -3,9 +3,6 @@
 import React from 'react'
 import dayjs from 'dayjs';
 import { greg, Sedra, HebrewCalendar, HDate, Location, HavdalahEvent } from '@hebcal/core';
-import List from '@mui/joy/List';
-import ListItem from '@mui/joy/ListItem';
-import ListItemButton from '@mui/joy/ListItemButton';
 
 let papujki_dates = [
 	{ name: "Папужковчина", date: "09-04" },
@@ -15,12 +12,14 @@ let papujki_dates = [
 ]
 
 const Allowed = [
+	"Tu BiShvat",
 	"Purim",
 	"Pesach I",
 	"Pesach VII",
 	"Tish'a B'Av",
 	"Sukkot I",
 	"Shavuot I",
+	"Yom HaShoah",
 	"Yom Kippur",
 	"Rosh Hashana 5",
 	"Chanukah: 1 Candle",
@@ -93,7 +92,7 @@ function CollectEvents(currentDate, this_year_cal, next_year_cal) {
 	let papujki_events = papujki_dates.map((info) => {
 		return { "name": info.name, "date": getEventDateStr(info.date, currentDate) }
 	});
-	console.log(this_year_cal.map(createEvent));
+	console.log(this_year_cal.map(createEvent).filter((ev) => !ev.name.startsWith("Candle") && !ev.name.startsWith("Havdal") && !ev.name.startsWith("Fast beg")))
 	const jewish_events = this_year_cal.map(createEvent)
 		.concat(next_year_cal.map(createEvent))
 		.filter((ev) => Allowed.some(prefix => ev.name === prefix) || ev.name.startsWith(
@@ -110,13 +109,39 @@ function CollectEvents(currentDate, this_year_cal, next_year_cal) {
 	return papujki_events;
 }
 
+// Custom List Components
+const CustomList = ({ children, className = "" }) => {
+	return (
+		<div className={`bg-blue-50 rounded-lg overflow-hidden shadow-sm ${className}`}>
+			{children}
+		</div>
+	);
+};
+
+const CustomListItem = ({ children, className = "" }) => {
+	return (
+		<div className={`border-b border-blue-100 last:border-b-0 ${className}`}>
+			{children}
+		</div>
+	);
+};
+
+const CustomListItemButton = ({ children, className = "" }) => {
+	return (
+		<button className={`w-full p-4 text-left bg-blue-100 hover:bg-blue-200 transition-colors duration-200 focus:outline-none focus:bg-blue-200 ${className}`}>
+			{children}
+		</button>
+	);
+};
+
 function MakeListElement(str, key) {
-	const li_style = "font-bold";
-	return <ListItem className={li_style} key={key}>
-		<ListItemButton color="primary" variant="soft" className="text-lg">
-			{str}
-		</ListItemButton>
-	</ListItem>
+	return (
+		<CustomListItem key={key}>
+			<CustomListItemButton className="font-bold text-lg text-blue-900">
+				{str}
+			</CustomListItemButton>
+		</CustomListItem>
+	);
 }
 
 function getCalendar(year) {
@@ -161,13 +186,9 @@ const JewishDatesList = () => {
 		return MakeListElement(evDesc, info.name);
 	}))
 	return (
-		<List className="" size="md" variant=""
-			sx={{
-				borderRadius: 'lg',
-			}}
-		>
+		<CustomList className="w-full">
 			{lis}
-		</List>
+		</CustomList>
 	)
 }
 

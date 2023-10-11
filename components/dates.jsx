@@ -20,9 +20,10 @@ const Allowed = [
 	"Pesach VII",
 	"Tish'a B'Av",
 	"Sukkot I",
-	"Shavuot I", "Yom Kippur",
+	"Shavuot I",
+	"Yom Kippur",
 	"Rosh Hashana 5",
-	"Chanukah: 1",
+	"Chanukah: 1 Candle",
 	"Simchat Torah",
 	"Shmini Atzeret",
 ]

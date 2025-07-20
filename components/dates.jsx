@@ -50,7 +50,7 @@ function getParsha(hebDate) {
 
 function getHavdalahTime(allEvents, hebDate) {
 	const firstHavdalah = allEvents.find((ev) => {
-		return ev.desc == "Havdalah" && ev.date.abs0 >= hebDate.abs0;
+		return ev.desc == "Havdalah" && ev.getDate().abs() >= hebDate.abs();
 	});
 	if (!firstHavdalah) {
 		return "";
@@ -60,7 +60,7 @@ function getHavdalahTime(allEvents, hebDate) {
 
 function getCandleLightTime(allEvents, hebDate) {
 	const candleLight = allEvents.find((ev) => {
-		return ev.desc == "Candle lighting" && ev.date.abs0 >= hebDate.abs0;
+		return ev.desc == "Candle lighting" && ev.getDate().abs() >= hebDate.abs();
 	});
 	if (!candleLight) {
 		return "";

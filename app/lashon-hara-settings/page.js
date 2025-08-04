@@ -9,20 +9,41 @@ const LashonHaraSettingsPage = () => {
 	const router = useRouter();
 
 	useEffect(() => {
-		const savedDays = localStorage.getItem('lashonHaraDays');
-		if (savedDays) {
-			const daysCount = parseInt(savedDays, 10);
-			setCurrentDays(daysCount);
-			setDays(daysCount.toString());
-		}
+		fetchCounter();
 	}, []);
 
-	const handleSubmit = (e) => {
+	const fetchCounter = async () => {
+		try {
+			const response = await fetch('/api/lashon-hara');
+			if (response.ok) {
+				const data = await response.json();
+				setCurrentDays(data.days);
+				setDays(data.days.toString());
+			}
+		} catch (error) {
+			console.error('Error fetching counter:', error);
+		}
+	};
+
+	const handleSubmit = async (e) => {
 		e.preventDefault();
 		const newDays = parseInt(days, 10);
 		if (!isNaN(newDays) && newDays >= 0) {
-			localStorage.setItem('lashonHaraDays', newDays.toString());
-			router.push('/');
+			try {
+				const response = await fetch('/api/lashon-hara', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify({ days: newDays }),
+				});
+				
+				if (response.ok) {
+					router.push('/');
+				}
+			} catch (error) {
+				console.error('Error updating counter:', error);
+			}
 		}
 	};
 

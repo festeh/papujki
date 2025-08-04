@@ -10,21 +10,43 @@ const LashonHaraCounter = () => {
 	const router = useRouter();
 
 	useEffect(() => {
-		const savedDays = localStorage.getItem('lashonHaraDays');
-		if (savedDays) {
-			setDays(parseInt(savedDays, 10));
-		}
+		fetchCounter();
 	}, []);
 
-	const incrementDays = (e) => {
+	const fetchCounter = async () => {
+		try {
+			const response = await fetch('/api/lashon-hara');
+			if (response.ok) {
+				const data = await response.json();
+				setDays(data.days);
+			}
+		} catch (error) {
+			console.error('Error fetching counter:', error);
+		}
+	};
+
+	const incrementDays = async (e) => {
 		e.stopPropagation();
 		const newDays = days + 1;
-		setDays(newDays);
-		localStorage.setItem('lashonHaraDays', newDays.toString());
 		
-		// Trigger confetti animation
-		setShowConfetti(true);
-		setTimeout(() => setShowConfetti(false), 1000);
+		try {
+			const response = await fetch('/api/lashon-hara', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({ days: newDays }),
+			});
+			
+			if (response.ok) {
+				setDays(newDays);
+				// Trigger confetti animation
+				setShowConfetti(true);
+				setTimeout(() => setShowConfetti(false), 1000);
+			}
+		} catch (error) {
+			console.error('Error updating counter:', error);
+		}
 	};
 
 	const handleLongPressStart = () => {

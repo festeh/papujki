@@ -3,6 +3,7 @@
 import React from 'react'
 import dayjs from 'dayjs';
 import { greg, Sedra, HebrewCalendar, HDate, Location, HavdalahEvent } from '@hebcal/core';
+import LashonHaraCounter from './lashon-hara-counter';
 
 let papujki_dates = [
 	{ name: "Папужковчина", date: "09-04" },
@@ -186,9 +187,12 @@ const JewishDatesList = () => {
 		return MakeListElement(evDesc, info.name);
 	}))
 	return (
-		<CustomList className="w-full">
-			{lis}
-		</CustomList>
+		<div className="w-full">
+			<LashonHaraCounter />
+			<CustomList className="w-full">
+				{lis}
+			</CustomList>
+		</div>
 	)
 }
 

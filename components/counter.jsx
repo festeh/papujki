@@ -8,9 +8,9 @@ const DaysCounter = () => {
 	const currentDate = dayjs();
 	const dateDelta = currentDate.diff(parsedDate, 'day');
 	return (
-		<div>
-			<h1 className="ml-2 text-3xl text-white" style={{fontFamily: 'Lobster, cursive'}}>
-				Папужки вместе уже <span className="text-highlight text-4xl" style={{fontFamily: 'Lobster, cursive'}}>{dateDelta}</span> дней  
+		<div className="flex-1 pr-2 sm:pr-4">
+			<h1 className="text-2xl sm:text-3xl text-white break-words" style={{fontFamily: 'Lobster, cursive'}}>
+				Папужки вместе уже <span className="text-highlight text-3xl sm:text-4xl" style={{fontFamily: 'Lobster, cursive'}}>{dateDelta}</span> дней  
 			</h1>
 		</div>
 	)

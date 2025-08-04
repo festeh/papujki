@@ -9,9 +9,13 @@ const page = () => {
 			{/* Header Section with Counter and Gifs */}
 			<header className="header-section">
 				<div className="flex items-center justify-center text-center">
-					<DaysCounter />
-					<Gif type="parrot" />
-					<Gif type="reverse" />
+					<div className="flex items-center justify-between sm:justify-start w-full sm:w-auto gap-2 sm:gap-1">
+						<DaysCounter />
+						<div className="flex flex-shrink-0 gap-1">
+							<Gif type="parrot" />
+							<Gif type="reverse" />
+						</div>
+					</div>
 				</div>
 			</header>
 

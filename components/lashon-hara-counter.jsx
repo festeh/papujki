@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 
 const LashonHaraCounter = () => {
 	const [days, setDays] = useState(0);
+	const [maxStreak, setMaxStreak] = useState(0);
 	const [showConfetti, setShowConfetti] = useState(false);
 	const [longPressTimer, setLongPressTimer] = useState(null);
 	const router = useRouter();
@@ -19,6 +20,7 @@ const LashonHaraCounter = () => {
 			if (response.ok) {
 				const data = await response.json();
 				setDays(data.days);
+				setMaxStreak(data.maxStreak || 0);
 			}
 		} catch (error) {
 			console.error('Error fetching counter:', error);
@@ -39,7 +41,9 @@ const LashonHaraCounter = () => {
 			});
 			
 			if (response.ok) {
-				setDays(newDays);
+				const data = await response.json();
+				setDays(data.days);
+				setMaxStreak(data.maxStreak);
 				// Trigger confetti animation
 				setShowConfetti(true);
 				setTimeout(() => setShowConfetti(false), 1000);

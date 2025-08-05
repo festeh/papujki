@@ -21,7 +21,7 @@ function readCounter() {
   } catch (error) {
     console.error('Error reading counter:', error);
   }
-  return { days: 0 };
+  return { days: 0, maxStreak: 0 };
 }
 
 function writeCounter(data) {
@@ -51,10 +51,14 @@ export async function POST(request) {
       );
     }
 
-    const success = writeCounter({ days });
+    const currentData = readCounter();
+    const maxStreak = Math.max(days, currentData.maxStreak || 0);
+    const newData = { days, maxStreak };
+
+    const success = writeCounter(newData);
     
     if (success) {
-      return NextResponse.json({ days });
+      return NextResponse.json(newData);
     } else {
       return NextResponse.json(
         { error: 'Failed to save counter' },

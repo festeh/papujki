@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 const LashonHaraSettingsPage = () => {
 	const [days, setDays] = useState('');
 	const [currentDays, setCurrentDays] = useState(0);
+	const [maxStreak, setMaxStreak] = useState(0);
 	const router = useRouter();
 
 	useEffect(() => {
@@ -18,6 +19,7 @@ const LashonHaraSettingsPage = () => {
 			if (response.ok) {
 				const data = await response.json();
 				setCurrentDays(data.days);
+				setMaxStreak(data.maxStreak || 0);
 				setDays(data.days.toString());
 			}
 		} catch (error) {
@@ -58,9 +60,15 @@ const LashonHaraSettingsPage = () => {
 					Set Days without Lashon Hara
 				</h1>
 				
-				<div className="mb-4 text-center">
-					<p className="text-gray-600 mb-2">Current count:</p>
-					<p className="text-3xl font-bold text-blue-600">{currentDays}</p>
+				<div className="mb-6 text-center space-y-4">
+					<div>
+						<p className="text-gray-600 mb-2">Current count:</p>
+						<p className="text-3xl font-bold text-blue-600">{currentDays}</p>
+					</div>
+					<div>
+						<p className="text-gray-600 mb-2">Maximum streak:</p>
+						<p className="text-2xl font-bold text-purple-600">{maxStreak}</p>
+					</div>
 				</div>
 
 				<form onSubmit={handleSubmit} className="space-y-4">

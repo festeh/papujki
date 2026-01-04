@@ -66,13 +66,14 @@ jobs:
         Type=simple
         User=root
         WorkingDirectory=/root/papujki
-        ExecStart=/usr/bin/node /root/papujki/node_modules/.bin/next start -p 3333
+        EnvironmentFile=/etc/environment
+        Environment=NODE_ENV=production
+        ExecStart=/root/.local/share/mise/shims/node /root/papujki/node_modules/.bin/next start -p 3333
         Restart=on-failure
         RestartSec=10
         StandardOutput=syslog
         StandardError=syslog
         SyslogIdentifier=papujki
-        Environment=NODE_ENV=production
 
         [Install]
         WantedBy=multi-user.target

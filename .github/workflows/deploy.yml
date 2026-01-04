@@ -1,0 +1,90 @@
+name: Build and Deploy Next.js
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+env:
+  APP_NAME: papujki
+  DEPLOY_PATH: /root/papujki
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Build Next.js app
+      run: npm run build
+
+    - name: Setup SSH
+      run: |
+        mkdir -p ~/.ssh
+        echo "${{ secrets.SSH_KEY }}" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+        ssh-keyscan -H ${{ secrets.HOST }} >> ~/.ssh/known_hosts
+
+    - name: Create deployment directory
+      run: |
+        ssh root@${{ secrets.HOST }} "mkdir -p ${{ env.DEPLOY_PATH }}"
+
+    - name: Stop existing service
+      run: |
+        ssh root@${{ secrets.HOST }} "systemctl stop ${{ env.APP_NAME }} || true"
+
+    - name: Deploy to remote host
+      run: |
+        rsync -avz --delete \
+          --exclude='.git' \
+          --exclude='node_modules' \
+          .next package.json package-lock.json next.config.* public \
+          root@${{ secrets.HOST }}:${{ env.DEPLOY_PATH }}/
+
+    - name: Install production dependencies on server
+      run: |
+        ssh root@${{ secrets.HOST }} "cd ${{ env.DEPLOY_PATH }} && npm ci --production"
+
+    - name: Deploy systemd service file
+      run: |
+        cat > papujki.service << 'EOF'
+        [Unit]
+        Description=Papujki Next.js App
+        After=network.target
+
+        [Service]
+        Type=simple
+        User=root
+        WorkingDirectory=/root/papujki
+        ExecStart=/usr/bin/node /root/papujki/node_modules/.bin/next start -p 3333
+        Restart=on-failure
+        RestartSec=10
+        StandardOutput=syslog
+        StandardError=syslog
+        SyslogIdentifier=papujki
+        Environment=NODE_ENV=production
+
+        [Install]
+        WantedBy=multi-user.target
+        EOF
+        scp papujki.service root@${{ secrets.HOST }}:/etc/systemd/system/
+        rm papujki.service
+
+    - name: Enable and start systemd service
+      run: |
+        ssh root@${{ secrets.HOST }} "systemctl daemon-reload && systemctl enable ${{ env.APP_NAME }} && systemctl start ${{ env.APP_NAME }}"
+
+    - name: Verify deployment
+      run: |
+        sleep 5
+        ssh root@${{ secrets.HOST }} "systemctl status ${{ env.APP_NAME }} --no-pager"
